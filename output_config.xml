@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage_report date="2026-05-10" generator="sport-coverage-optimizer">
+    <venue name="Стадион «Пример»" type="stadium"/>
+    <summary coverage_total="100.0" coverage_cameras="88.0" tco="985000" num_cameras="12" num_drones="5"/>
+    <stationary_cameras count="12">
+        <camera id="C4" x="97.0" y="77.0" azimuth="225.0" angle_h="80.0" range_m="35.0" cost="80000"/>
+        <camera id="C5" x="3.0" y="3.0" azimuth="45.0" angle_h="80.0" range_m="35.0" cost="80000"/>
+        <camera id="C3" x="65.0" y="77.0" azimuth="270.0" angle_h="80.0" range_m="35.0" cost="80000"/>
+        <camera id="C6" x="35.0" y="3.0" azimuth="90.0" angle_h="80.0" range_m="35.0" cost="80000"/>
+        <camera id="C9" x="3.0" y="40.0" azimuth="0.0" angle_h="80.0" range_m="35.0" cost="80000"/>
+        <camera id="C10" x="97.0" y="40.0" azimuth="180.0" angle_h="80.0" range_m="35.0" cost="80000"/>
+        <camera id="C16" x="3.0" y="25.0" azimuth="350.0" angle_h="70.0" range_m="28.0" cost="65000"/>
+        <camera id="C13" x="22.0" y="3.0" azimuth="60.0" angle_h="80.0" range_m="30.0" cost="70000"/>
+        <camera id="C7" x="65.0" y="3.0" azimuth="90.0" angle_h="80.0" range_m="35.0" cost="80000"/>
+        <camera id="C2" x="35.0" y="77.0" azimuth="270.0" angle_h="80.0" range_m="35.0" cost="80000"/>
+        <camera id="C12" x="78.0" y="77.0" azimuth="240.0" angle_h="80.0" range_m="30.0" cost="70000"/>
+        <camera id="C17" x="97.0" y="55.0" azimuth="170.0" angle_h="70.0" range_m="28.0" cost="65000"/>
+    </stationary_cameras>
+    <drone_routes count="5">
+        <route id="1" waypoints_count="7">
+            <waypoint seq="1" x="27.5" y="67.5"/>
+            <waypoint seq="2" x="17.0" y="68.0"/>
+            <waypoint seq="3" x="15.5" y="52.5"/>
+            <waypoint seq="4" x="15.5" y="47.5"/>
+            <waypoint seq="5" x="15.5" y="42.5"/>
+            <waypoint seq="6" x="15.5" y="37.5"/>
+            <waypoint seq="7" x="10.5" y="37.5"/>
+        </route>
+        <route id="2" waypoints_count="2">
+            <waypoint seq="1" x="10.5" y="37.5"/>
+            <waypoint seq="2" x="17.0" y="12.0"/>
+        </route>
+        <route id="3" waypoints_count="2">
+            <waypoint seq="1" x="17.0" y="12.0"/>
+            <waypoint seq="2" x="72.5" y="10.5"/>
+        </route>
+        <route id="4" waypoints_count="7">
+            <waypoint seq="1" x="72.5" y="10.5"/>
+            <waypoint seq="2" x="83.0" y="12.0"/>
+            <waypoint seq="3" x="82.5" y="27.5"/>
+            <waypoint seq="4" x="82.5" y="32.5"/>
+            <waypoint seq="5" x="82.5" y="37.5"/>
+            <waypoint seq="6" x="82.5" y="42.5"/>
+            <waypoint seq="7" x="87.5" y="42.5"/>
+        </route>
+        <route id="5" waypoints_count="2">
+            <waypoint seq="1" x="87.5" y="42.5"/>
+            <waypoint seq="2" x="87.5" y="37.5"/>
+        </route>
+    </drone_routes>
+    <economic_alternatives>
+        <configuration label="Экономичная (K=6 камер)" cameras="6" drones="10" coverage_cameras="71.3" coverage_total="100.0" tco="630000" score="0.5081"/>
+        <configuration label="Основная (оптимальная)" cameras="12" drones="5" coverage_cameras="88.0" coverage_total="100.0" tco="985000" score="0.4"/>
+    </economic_alternatives>
+</coverage_report>
