@@ -17,6 +17,15 @@ stationary_optimizer.py
         Σⱼ xⱼ ≤ K                    (бюджетное ограничение)
         xⱼ, yᵢ ∈ {0,1}
 
+При равенстве покрытия предпочтение отдаётся более дешёвой конфигурации.
+Для этого в целевую функцию добавлен штраф за стоимость с весом eps,
+подобранным так, что суммарный штраф строго меньше единицы:
+
+    Maximize  Σᵢ yᵢ − eps · Σⱼ (cⱼ / c_max) · xⱼ,   eps = 0.5 / K
+
+Такой штраф не может «перевесить» ни одной покрытой точки и работает
+исключительно как правило разрешения ничьих.
+
 Если установлена библиотека PuLP — используется точный CBC-решатель.
 Иначе применяется встроенный жадный алгоритм (greedy set cover),
 который гарантирует ln(N)-аппроксимацию оптимума.
@@ -49,11 +58,12 @@ class StationaryOptimizer:
                  budget_k: int = 12):
         self.A = coverage_matrix          # (N, M)
         self.costs = np.array(costs, dtype=float)
-        self.K = budget_k
         self.N, self.M = self.A.shape
+        self.K = max(0, min(int(budget_k), self.M))
 
         self.selected: np.ndarray = np.array([], dtype=int)  # индексы выбранных позиций
         self.coverage_pct: float = 0.0
+        self.covered_points: int = 0
         self.total_cost: float = 0.0
 
     # ------------------------------------------------------------------
@@ -75,8 +85,11 @@ class StationaryOptimizer:
         x = [pulp.LpVariable(f"x_{j}", cat='Binary') for j in range(self.M)]
         y = [pulp.LpVariable(f"y_{i}", cat='Binary') for i in range(self.N)]
 
-        # Целевая функция
-        prob += pulp.lpSum(y)
+        # Целевая функция: покрытие с штрафом-разрешителем ничьих по стоимости
+        c_max = float(self.costs.max()) if self.M and self.costs.max() > 0 else 1.0
+        eps = 0.5 / max(self.K, 1)
+        prob += pulp.lpSum(y) - eps * pulp.lpSum(
+            (self.costs[j] / c_max) * x[j] for j in range(self.M))
 
         # Бюджетное ограничение
         prob += pulp.lpSum(x) <= self.K
@@ -105,28 +118,30 @@ class StationaryOptimizer:
         ещё не покрытых точек.
         Гарантирует ln(N)-аппроксимацию оптимального решения.
         """
-        uncovered = set(range(self.N))
+        uncovered = np.ones(self.N, dtype=bool)
+        available = np.ones(self.M, dtype=bool)
         selected = []
-        available = set(range(self.M))
 
         for _ in range(self.K):
-            if not uncovered or not available:
+            if not uncovered.any() or not available.any():
                 break
 
-            # Для каждой доступной позиции — число новых покрытых точек
-            best_j, best_gain = -1, -1
-            for j in available:
-                gain = len(uncovered & set(np.where(self.A[:, j])[0]))
-                if gain > best_gain:
-                    best_gain, best_j = gain, j
+            # Прирост покрытия для каждой позиции (векторизованно)
+            gains = (self.A[uncovered, :] > 0).sum(axis=0).astype(float)
+            gains[~available] = -1.0
 
-            if best_j == -1 or best_gain == 0:
+            best_gain = gains.max()
+            if best_gain <= 0:
                 break
+
+            # Разрешение ничьих по стоимости: из позиций с максимальным
+            # приростом выбирается самая дешёвая
+            ties = np.where(gains == best_gain)[0]
+            best_j = int(ties[np.argmin(self.costs[ties])])
 
             selected.append(best_j)
-            available.remove(best_j)
-            newly_covered = set(np.where(self.A[:, best_j])[0])
-            uncovered -= newly_covered
+            available[best_j] = False
+            uncovered &= ~(self.A[:, best_j] > 0)
 
         self._finalize(np.array(selected, dtype=int))
         return self.selected
@@ -135,8 +150,11 @@ class StationaryOptimizer:
     def _finalize(self, selected: np.ndarray):
         """Сохраняет результат и рассчитывает итоговые показатели."""
         self.selected = selected
+        covered = 0
+        if self.N > 0 and len(selected):
+            covered = int(self.A[:, selected].any(axis=1).sum())
+        self.covered_points = covered
         if self.N > 0:
-            covered = self.A[:, selected].any(axis=1).sum() if len(selected) else 0
             self.coverage_pct = covered / self.N * 100.0
         self.total_cost = self.costs[selected].sum() if len(selected) else 0.0
 
@@ -148,5 +166,6 @@ class StationaryOptimizer:
             'num_cameras':      len(self.selected),
             'coverage_pct':     round(self.coverage_pct, 2),
             'total_cost':       self.total_cost,
+            'covered_points':   int(self.covered_points),
             'solver':           'ILP (PuLP/CBC)' if _PULP_AVAILABLE else 'Greedy Set Cover',
         }

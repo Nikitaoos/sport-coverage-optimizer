@@ -13,9 +13,15 @@ economic_balancer.py
     Score = w_cov * Coverage_norm - w_cost * Cost_norm
 
 где:
-    Coverage_norm = coverage_pct / max(coverage_pct across configs)
+    Coverage_norm = coverage_total / 100        (абсолютная нормировка)
     Cost_norm     = tco / max(tco across configs)
     w_cov + w_cost = 1  (по умолчанию w_cov=0.7, w_cost=0.3)
+
+Покрытие нормируется абсолютно (по физическому максимуму 100 %), а не по
+максимуму среди сравниваемых конфигураций. При нормировке покрытия по
+максимуму выборки лучшая конфигурация, будучи максимальной и по покрытию,
+и по стоимости, всегда получала Score = w_cov - w_cost независимо от
+фактических показателей, то есть критерий вырождался в константу.
 """
 
 from dataclasses import dataclass, field
@@ -73,11 +79,10 @@ class EconomicBalancer:
         if not self.configs:
             return []
 
-        max_cov  = max(c.coverage_total for c in self.configs) or 1.0
         max_cost = max(c.tco for c in self.configs) or 1.0
 
         for c in self.configs:
-            cov_norm  = c.coverage_total / max_cov
+            cov_norm  = c.coverage_total / 100.0
             cost_norm = c.tco / max_cost
             c.score = self.w_cov * cov_norm - self.w_cost * cost_norm
 
