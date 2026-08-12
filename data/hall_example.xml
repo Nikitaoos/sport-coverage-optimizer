@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Закрытый спортивный зал 40 x 30 м.
+    Полёты БПЛА внутри помещения не предусмотрены: запретных зон нет,
+    подсистема БПЛА в сценариях для этого объекта отключается.
+-->
+<venue name="Спортивный зал «Пример»" type="hall" capacity="600">
+
+    <sectors>
+        <sector id="S1" name="Игровая зона" x="2"  y="2"  width="36" height="22" priority="1"/>
+        <sector id="S2" name="Зона трибун" x="2"  y="24" width="36" height="4"  priority="2"/>
+    </sectors>
+
+    <camera_positions>
+        <position id="C1" x="2"  y="2"  azimuth="45"  angle_h="90" range_m="22" cost="65000"/>
+        <position id="C2" x="38" y="2"  azimuth="315" angle_h="90" range_m="22" cost="65000"/>
+        <position id="C3" x="2"  y="28" azimuth="135" angle_h="90" range_m="22" cost="65000"/>
+        <position id="C4" x="38" y="28" azimuth="225" angle_h="90" range_m="22" cost="65000"/>
+        <position id="C5" x="20" y="2"  azimuth="0"   angle_h="90" range_m="20" cost="60000"/>
+        <position id="C6" x="20" y="28" azimuth="180" angle_h="90" range_m="20" cost="60000"/>
+        <position id="C7" x="2"  y="15" azimuth="90"  angle_h="80" range_m="20" cost="60000"/>
+        <position id="C8" x="38" y="15" azimuth="270" angle_h="80" range_m="20" cost="60000"/>
+        <position id="C9" x="10" y="28" azimuth="200" angle_h="80" range_m="18" cost="55000"/>
+        <position id="C10" x="30" y="28" azimuth="160" angle_h="80" range_m="18" cost="55000"/>
+    </camera_positions>
+
+    <forbidden_zones/>
+
+    <drone_params range_m="40" obs_radius_m="8" max_units="2" cost_per_unit="15000"/>
+
+</venue>

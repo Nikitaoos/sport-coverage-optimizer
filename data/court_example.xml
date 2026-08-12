@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Открытая спортивная площадка 30 x 20 м.
+    Запретная зона — игровое ядро, над которым полёты не выполняются.
+-->
+<venue name="Спортивная площадка «Пример»" type="court" capacity="200">
+
+    <sectors>
+        <sector id="S1" name="Площадка"        x="2"  y="2"  width="26" height="16" priority="1"/>
+        <sector id="S2" name="Зона зрителей"   x="2"  y="18" width="26" height="2"  priority="2"/>
+    </sectors>
+
+    <camera_positions>
+        <position id="C1" x="2"  y="2"  azimuth="45"  angle_h="90" range_m="16" cost="55000"/>
+        <position id="C2" x="28" y="2"  azimuth="315" angle_h="90" range_m="16" cost="55000"/>
+        <position id="C3" x="2"  y="20" azimuth="135" angle_h="90" range_m="16" cost="55000"/>
+        <position id="C4" x="28" y="20" azimuth="225" angle_h="90" range_m="16" cost="55000"/>
+        <position id="C5" x="15" y="2"  azimuth="0"   angle_h="80" range_m="14" cost="50000"/>
+        <position id="C6" x="15" y="20" azimuth="180" angle_h="80" range_m="14" cost="50000"/>
+        <position id="C7" x="2"  y="11" azimuth="90"  angle_h="70" range_m="14" cost="48000"/>
+        <position id="C8" x="28" y="11" azimuth="270" angle_h="70" range_m="14" cost="48000"/>
+    </camera_positions>
+
+    <forbidden_zones>
+        <zone id="FZ1" name="Игровое ядро" x="10" y="6" width="10" height="8"/>
+    </forbidden_zones>
+
+    <drone_params range_m="45" obs_radius_m="6" max_units="2" cost_per_unit="12000"/>
+
+</venue>
